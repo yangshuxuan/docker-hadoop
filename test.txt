@@ -1,0 +1,3 @@
+namenode sh
+datanode sh
+namenode

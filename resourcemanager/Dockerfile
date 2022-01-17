@@ -1,12 +1,6 @@
-FROM bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8
+FROM bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8 
 
-MAINTAINER Ivan Ermilov <ivan.s.ermilov@gmail.com>
+RUN apt-get update
 
-HEALTHCHECK CMD curl -f http://localhost:8088/ || exit 1
+RUN apt-get install -y python
 
-ADD run.sh /run.sh
-RUN chmod a+x /run.sh
-
-EXPOSE 8088
-
-CMD ["/run.sh"]

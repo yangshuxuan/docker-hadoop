@@ -2,12 +2,12 @@ version: "3"
 
 services:
   namenode:
-    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    build: ./namenode
     container_name: namenode
     restart: always
     ports:
       - 9870:9870
-      - 9000:9000
+      - 9001:9000
     volumes:
       - hadoop_namenode:/hadoop/dfs/name
     environment:
@@ -16,7 +16,7 @@ services:
       - ./hadoop.env
 
   datanode:
-    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    build: ./datanode
     container_name: datanode
     restart: always
     volumes:
@@ -27,8 +27,10 @@ services:
       - ./hadoop.env
   
   resourcemanager:
-    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    build: ./resourcemanager
     container_name: resourcemanager
+    ports:
+      - 8088:8088
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
@@ -36,8 +38,11 @@ services:
       - ./hadoop.env
 
   nodemanager1:
-    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    build: ./nodemanager
     container_name: nodemanager
+    ports:
+      - 8042:8042
+      - 19888:19888
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
@@ -45,9 +50,12 @@ services:
       - ./hadoop.env
   
   historyserver:
+    build: ./historyserver
     image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
     container_name: historyserver
     restart: always
+    ports:
+      - 8188:8188
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     volumes:
